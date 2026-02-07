@@ -15,6 +15,7 @@ import {
   Zap,
   Brain,
   MessageSquare,
+  Plus,
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
@@ -22,9 +23,11 @@ import { Badge } from "./ui/badge";
 
 interface DashboardProps {
   onLogout: () => void;
+  onActionClick: (actionType: string) => void;
+  onCreateAction: () => void;
 }
 
-export function Dashboard({ onLogout }: DashboardProps) {
+export function Dashboard({ onLogout, onActionClick, onCreateAction }: DashboardProps) {
   const [activeInsight, setActiveInsight] = useState(0);
 
   const stats = [
@@ -64,54 +67,56 @@ export function Dashboard({ onLogout }: DashboardProps) {
 
   const actions = [
     {
-      label: "New Shipment",
+      label: "Chute Full",
       icon: Package,
       gradient: "from-blue-500 to-cyan-500",
-      description: "AI-powered routing",
+      description: "Alert Web App that the chute is full",
     },
-    {
-      label: "Track Package",
-      icon: MapPin,
-      gradient: "from-emerald-500 to-green-500",
-      description: "Real-time tracking",
-    },
-    {
-      label: "AI Insights",
-      icon: Brain,
-      gradient: "from-purple-500 to-pink-500",
-      description: "Smart analytics",
-    },
-    {
-      label: "Documents",
-      icon: FileText,
-      gradient: "from-orange-500 to-amber-500",
-      description: "Auto-generate",
-    },
-    {
-      label: "Fleet Status",
-      icon: Truck,
-      gradient: "from-teal-500 to-cyan-500",
-      description: "Live monitoring",
-    },
-    {
-      label: "Optimize Routes",
-      icon: Zap,
-      gradient: "from-violet-500 to-purple-500",
-      description: "AI optimization",
-    },
+    // {
+    //   label: "Chute",
+    //   icon: MapPin,
+    //   gradient: "from-emerald-500 to-green-500",
+    //   description: "Real-time tracking",
+    // },
+    // {
+    //   label: "AI Insights",
+    //   icon: Brain,
+    //   gradient: "from-purple-500 to-pink-500",
+    //   description: "Smart analytics",
+    // },
+    // {
+    //   label: "Documents",
+    //   icon: FileText,
+    //   gradient: "from-orange-500 to-amber-500",
+    //   description: "Auto-generate",
+    // },
+    // {
+    //   label: "Fleet Status",
+    //   icon: Truck,
+    //   gradient: "from-teal-500 to-cyan-500",
+    //   description: "Live monitoring",
+    // },
+    // {
+    //   label: "Optimize Routes",
+    //   icon: Zap,
+    //   gradient: "from-violet-500 to-purple-500",
+    //   description: "AI optimization",
+    // },
   ];
 
   const aiInsights = [
     {
       icon: TrendingUp,
       title: "Peak Efficiency Detected",
-      message: "Your fleet is performing 23% above average today",
+      message:
+        "Your fleet is performing 23% above average today",
       color: "text-emerald-400",
     },
     {
       icon: Sparkles,
       title: "Route Optimization Available",
-      message: "AI suggests 3 routes that could save 45 minutes",
+      message:
+        "AI suggests 3 routes that could save 45 minutes",
       color: "text-blue-400",
     },
     {
@@ -119,33 +124,6 @@ export function Dashboard({ onLogout }: DashboardProps) {
       title: "Weather Alert",
       message: "Potential delays on Route 7 due to conditions",
       color: "text-amber-400",
-    },
-  ];
-
-  const recentShipments = [
-    {
-      id: "SH-2024-001",
-      status: "In Transit",
-      destination: "New York, NY",
-      eta: "2 hours",
-      progress: 65,
-      aiScore: 98,
-    },
-    {
-      id: "SH-2024-002",
-      status: "Delivered",
-      destination: "Los Angeles, CA",
-      eta: "Completed",
-      progress: 100,
-      aiScore: 95,
-    },
-    {
-      id: "SH-2024-003",
-      status: "Processing",
-      destination: "Chicago, IL",
-      eta: "4 hours",
-      progress: 25,
-      aiScore: 92,
     },
   ];
 
@@ -199,33 +177,6 @@ export function Dashboard({ onLogout }: DashboardProps) {
           </div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-3">
-          {stats.map((stat, index) => (
-            <div
-              key={index}
-              className={`relative backdrop-blur-xl bg-gradient-to-br ${stat.bg} rounded-2xl p-4 border border-white/20 shadow-xl overflow-hidden group hover:scale-105 transition-transform`}
-            >
-              {/* Shine effect */}
-              <div className="absolute inset-0 bg-gradient-to-br from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-              
-              <div className="relative flex items-start justify-between">
-                <div>
-                  <p className="text-3xl font-bold text-white">{stat.value}</p>
-                  <p className="text-xs text-white/80 mt-1">{stat.label}</p>
-                  <div className="flex items-center gap-1 mt-2">
-                    <TrendingUp className="w-3 h-3 text-emerald-400" />
-                    <span className="text-xs text-emerald-400">{stat.trend}</span>
-                  </div>
-                </div>
-                <div className={`p-2 rounded-xl bg-white/10 backdrop-blur-sm`}>
-                  <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
         {/* AI Insights Carousel */}
         <div className="relative">
           <div className="flex items-center justify-between mb-3">
@@ -250,9 +201,12 @@ export function Dashboard({ onLogout }: DashboardProps) {
           <div className="backdrop-blur-xl bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl p-4 border border-purple-400/30 shadow-xl">
             <div className="flex items-start gap-3">
               <div className="p-2 rounded-xl bg-white/10">
-                {React.createElement(aiInsights[activeInsight].icon, {
-                  className: `w-5 h-5 ${aiInsights[activeInsight].color}`,
-                })}
+                {React.createElement(
+                  aiInsights[activeInsight].icon,
+                  {
+                    className: `w-5 h-5 ${aiInsights[activeInsight].color}`,
+                  },
+                )}
               </div>
               <div className="flex-1">
                 <h4 className="font-semibold text-white text-sm mb-1">
@@ -268,16 +222,21 @@ export function Dashboard({ onLogout }: DashboardProps) {
 
         {/* Quick Actions */}
         <div>
-          <h3 className="text-sm font-semibold text-white mb-3">Quick Actions</h3>
+          <h3 className="text-sm font-semibold text-white mb-3">
+            Quick Actions
+          </h3>
           <div className="grid grid-cols-2 gap-3">
             {actions.map((action, index) => (
               <button
                 key={index}
+                onClick={() => onActionClick(action.label)}
                 className="relative backdrop-blur-xl bg-white/5 rounded-2xl p-4 border border-white/10 hover:border-white/30 transition-all active:scale-95 text-left group overflow-hidden shadow-xl hover:shadow-2xl"
               >
                 {/* Gradient hover effect */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${action.gradient} opacity-0 group-hover:opacity-20 transition-opacity`}></div>
-                
+                <div
+                  className={`absolute inset-0 bg-gradient-to-br ${action.gradient} opacity-0 group-hover:opacity-20 transition-opacity`}
+                ></div>
+
                 <div className="relative">
                   <div
                     className={`w-12 h-12 bg-gradient-to-br ${action.gradient} rounded-xl flex items-center justify-center mb-3 shadow-lg`}
@@ -293,6 +252,29 @@ export function Dashboard({ onLogout }: DashboardProps) {
                 </div>
               </button>
             ))}
+            <button
+              onClick={onCreateAction}
+              className="relative backdrop-blur-xl bg-white/5 rounded-2xl p-4 border border-white/10 hover:border-white/30 transition-all active:scale-95 text-left group overflow-hidden shadow-xl hover:shadow-2xl"
+            >
+              {/* Gradient hover effect */}
+              <div
+                className={`absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-20 transition-opacity`}
+              ></div>
+
+              <div className="relative">
+                <div
+                  className={`w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center mb-3 shadow-lg`}
+                >
+                  <Plus className="w-6 h-6 text-white" />
+                </div>
+                <h4 className="font-semibold text-white text-sm mb-1">
+                  Create Action
+                </h4>
+                <p className="text-xs text-white/60">
+                  Add a new action
+                </p>
+              </div>
+            </button>
           </div>
         </div>
 
